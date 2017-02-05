@@ -3,6 +3,7 @@ package project1;
 public class Cell {
 	private double fScore;
 	private double gScore;
+	private double hScore;
 	private Coordinate coordinates;
 	private char type; //0,1,2,a,b
 	
@@ -37,6 +38,9 @@ public class Cell {
 	public void setgScore(double score){
 		gScore = score;
 	}
+	public void sethScore(double score){
+		hScore = score;
+	}
 	
 	public double getfScore(){
 		return fScore;
@@ -44,10 +48,17 @@ public class Cell {
 	public double getgScore(){
 		return gScore;
 	}
+	public double gethScore(){
+		return hScore;
+	}
 	public Coordinate getCoords(){
 		return coordinates;
 	}
 	public char getType(){
 		return type;
+	}
+	@Override
+	public String toString(){
+		return "Cell Coordinates: " + coordinates.getX() + ", " + coordinates.getY() + "\nType: " + type + "\nfScore: " + fScore + "\ngScore: " + gScore + "\nhScore: " + hScore;
 	}
 }

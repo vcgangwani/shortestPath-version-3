@@ -12,12 +12,17 @@ public class Map {
 	private Cell[][] cellArr;
 	private Coordinate[] start = new Coordinate[10];
 	private Coordinate[] end = new Coordinate[10];
+	private Coordinate[] search = new Coordinate[10];
 	private Coordinate[] hardCenters;
 	
 	public Map(String fileName) throws FileNotFoundException {
 		File[] file = new File[10];
 		for(int i = 0; i < 10; i++){
-			file[i] = new File(fileName + "_" + i + ".txt");
+			if(fileName.contains(".txt"))
+				file[i] = new File(fileName);
+			
+			else
+				file[i] = new File(fileName + "_" + i + ".txt");
 		}
 		//File file = new File(fileName);
 		String[] fName = fileName.split("\\\\");
@@ -26,8 +31,13 @@ public class Map {
 		Scanner[] sc = new Scanner[10];
 		for(int i = 0; i < 10; i++){
 			sc[i] = new Scanner(file[i]);
+		}
+		for(int i = 0; i < 10; i++){
 			start[i] = new Coordinate(sc[i].nextInt(), sc[i].nextInt());
 			end[i] = new Coordinate(sc[i].nextInt(), sc[i].nextInt());
+			search[i] = new Coordinate(0,0);
+			//System.out.println(i + ". Start: " + start[i].toString());
+			//System.out.println(i + ". End: " + end[i].toString());
 		}
 		//Scanner sc = new Scanner(file);
 		
@@ -42,14 +52,15 @@ public class Map {
 		for(int i = 0; i < 8; i++){
 			hardCenters[i] = 
 					new Coordinate(sc[0].nextInt(),sc[0].nextInt());
-			System.out.println(i + ". " + hardCenters[i].toString());
+			//System.out.println(i + ". " + hardCenters[i].toString());
 		}
 		
 		//retrieves the rest of the map
 		for(int j = 0; j < 120; j++){
 			String row = sc[0].next();
 			for(int i = 0; i < 160; i++){
-				this.charArr[i][j] = row.charAt(i);
+				this.charArr[i][j] = 
+						row.charAt(i);
 				this.cellArr[i][j] = new Cell(i,j, row.charAt(i));
 			}
 		}	
@@ -64,6 +75,9 @@ public class Map {
 	}
 	public void setEnd(Coordinate end, int number){
 		this.end[number] = end;
+	}
+	public void setSearch(Coordinate search, int number){
+		this.search[number] = search;
 	}
 	
 	//get functions
@@ -96,9 +110,14 @@ public class Map {
 	public Coordinate getEnd(int number){
 		return end[number];
 	}
+	public Coordinate getSearch(int number) {
+		return search[number];
+	}
 	public Coordinate[] getHardCenters(){
 		return hardCenters;
 	}
+
+	
 	
 	
 }

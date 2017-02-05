@@ -16,10 +16,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MapGenerator {
 	
-	public static Map generate(String fileName) throws IOException{
+	public static Map[] generate(String fileName) throws IOException{
 		Path[] file = new Path[10];
+		String[] newName = new String[10];
 		for(int i = 0; i < 10; i++){
 			file[i] = Paths.get(fileName + "_" + i + ".txt");
+			newName[i] = fileName + "_" + i + ".txt";
 		}
 		
 		char[][] map = new char[120][160];
@@ -62,10 +64,14 @@ public class MapGenerator {
 			linesToWrite.add(tmp);
 		}
 		
+		Map[] allMaps = new Map[10];
+		
 		for(int i = 0; i < 10; i++){
 			Files.write(file[i], linesToWrite, StandardOpenOption.APPEND);
+			allMaps[i] = new Map(newName[i]);
 		}
-		return new Map(fileName);
+		
+		return allMaps;
 		
 	}
 	private static char[][] generateHard(char[][] map, Coordinate[] coords) {
@@ -112,7 +118,7 @@ public class MapGenerator {
 			for(int j = xmin; j < Math.min(xmin+30, 120); j++){
 				for(int k = ymin; k < Math.min(ymin+30, 160); k++){
 					if(map[j][k] == '1'){
-						if((int)Math.random()*2 == 0){
+						if((int)(Math.random()*2) == 0){
 							map[j][k] = '2';
 						}
 					}
@@ -137,26 +143,28 @@ public class MapGenerator {
 			int x = -1, y = -1;
 			// boundaries - north: 0, south: 1, east: 2, west: 3
 			// direction = n, s, e, w
-			switch (ThreadLocalRandom.current().nextInt(0, 4)) {
+			switch ((int)(Math.random() * 4)) {
 			case 0:
-				direction = 's';
-				x = ThreadLocalRandom.current().nextInt(0, 120);
-				y = 0;
-				break;
-			case 1:
 				direction = 'n';
-				x = ThreadLocalRandom.current().nextInt(0, 120);
+				x = (int)(Math.random() * 120);
 				y = 159;
 				break;
-			case 2:
-				direction = 'w';
-				x = 119;
-				y = ThreadLocalRandom.current().nextInt(0, 160);
+				
+			case 1:
+				direction = 's';
+				x = (int)(Math.random() * 120);
+				y = 0;
 				break;
-			case 3:
+			case 2:
 				direction = 'e';
 				x = 0;
-				y = ThreadLocalRandom.current().nextInt(0, 160);
+				y = (int)(Math.random() * 160);
+				break;
+				
+			case 3:
+				direction = 'w';
+				x = 119;
+				y = (int)(Math.random() * 160);
 				break;
 			}
 
@@ -283,7 +291,7 @@ public class MapGenerator {
 			break;
 		case 1: //bottom 20 rows
 			x = (int)(Math.random() * 20 + 100);
-			y = (int)(Math.random() * 160);
+			y = (int)(Math.random() * 120);
 			break;
 		case 2: //left-most 20 columns
 			x = (int)(Math.random() * 120);
@@ -295,7 +303,7 @@ public class MapGenerator {
 			break;
 		}
 		if (map[x][y] != '0') {
-			coord = new Coordinate(x,y);
+			coord = new Coordinate(y,x);
 			System.out.println("Start: " + coord.toString());
 			return coord;
 		}
@@ -324,9 +332,9 @@ public class MapGenerator {
 			y = (int)(Math.random() * 20 + 140);
 			break;
 		}
-		double distance = Math.sqrt(Math.pow(x - startCoord.getX(), 2) + Math.pow(y - startCoord.getY(),2));
+		double distance = Math.sqrt(Math.pow(y - startCoord.getX(), 2) + Math.pow(x - startCoord.getY(),2));
 		if (map[x][y] != '0' && distance >= 100) {
-			coord = new Coordinate(x,y);
+			coord = new Coordinate(y,x);
 			System.out.println("End: " + coord.toString());
 			return coord;
 		}
@@ -335,7 +343,7 @@ public class MapGenerator {
 	
 	public static void main(String [] args){
 		try {
-			generate("test");
+			generate("hello");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

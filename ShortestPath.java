@@ -1,4 +1,5 @@
-package project1;
+import structures.Coordinate;
+import structures.Cell;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class ShortestPath {
 		double g = 0, h = 0, f =0; //g = path cost, h = heuristic, f = g+h
 		Cell current; //Vertex being expanded
 		closedList.add(start); //adding start vertex to expanded list
-		
+		double w = weight;
 		//master loop checking and expanding vertices until the goal vertex is found
 		do{
 			//setting which vertex to be expanded
@@ -37,10 +38,10 @@ public class ShortestPath {
 			Cell dr = getDR(current, map);
 			
 			//makes sure that these vertices are not an edge, not blocked, not already expanded, and does not lead to dead end
-			if(ul != null && map[ul.getCoords().getX()][ul.getCoords().getY()] != '0' && !closedList.contains(ul) && !noPaths.contains(ul)){
+			if(ul != null && map[ul.getCoords().getX()][ul.getCoords().getY()] != '0' && map[ul.getCoords().getX()][ul.getCoords().getY()] != 'a' && map[ul.getCoords().getX()][ul.getCoords().getY()] != 'b' && !closedList.contains(ul) && !noPaths.contains(ul)){
 				openList.add(ul);
 				//finding heuristic value, which is the Euclidean distance from vertex to end
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)ul.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)ul.getCoords().getY(),2));
+				h = h(ul.getCoords().getX(), ul.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);
 				//assigning g value for vertex to move in to
 				switch(ul.getType()){
 					case '1':
@@ -66,13 +67,13 @@ public class ShortestPath {
 				g = g/2; //each movement only moves through half of each vertex
 				g = ul.getgScore() + g; //adding g value to previous g value
 				ul.setgScore(g); //assign/reassigning g values to vertex
-				f = h + g; 
+				f = w*h + g; 
 				ul.setfScore(f); 
 			}
 			//repeat for each of the vertices around current vertex
 			if(uu != null && map[uu.getCoords().getX()][uu.getCoords().getY()] != '0' && !closedList.contains(uu) && !noPaths.contains(uu)){
 				openList.add(uu);
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)uu.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)uu.getCoords().getY(),2));
+				h = h(uu.getCoords().getX(), uu.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(uu.getType()){
 					case '1':
 						g = 1;
@@ -96,12 +97,12 @@ public class ShortestPath {
 				g = g/2;
 				g = uu.getgScore() + g;
 				uu.setgScore(g);
-				f = h + g;
+				f = w*h + g; 
 				uu.setfScore(f);
 			}
-			if(ur != null && map[ur.getCoords().getX()][ur.getCoords().getY()] != '0' && !closedList.contains(ur) && !noPaths.contains(ur)){
+			if(ur != null && map[ur.getCoords().getX()][ur.getCoords().getY()] != '0' && map[ur.getCoords().getX()][ur.getCoords().getY()] != 'a' && map[ur.getCoords().getX()][ur.getCoords().getY()] != 'b' && !closedList.contains(ur) && !noPaths.contains(ur)){
 				openList.add(ur);
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)ur.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)ur.getCoords().getY(),2));
+				h = h(ur.getCoords().getX(), ur.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(ur.getType()){
 					case '1':
 						g = Math.sqrt(2);
@@ -125,12 +126,12 @@ public class ShortestPath {
 				g = g/2;
 				g = ur.getgScore() + g;
 				ur.setgScore(g);
-				f = h + g;
+				f = w*h + g; 
 				ur.setfScore(f);
 			}
 			if(ll != null && map[ll.getCoords().getX()][ll.getCoords().getY()] != '0' && !closedList.contains(ll) && !noPaths.contains(ll)){
 				openList.add(ll);
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)ll.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)ll.getCoords().getY(),2));
+				h = h(ll.getCoords().getX(), ll.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(ll.getType()){
 					case '1':
 						g = 1;
@@ -154,12 +155,12 @@ public class ShortestPath {
 				g = g/2;
 				g = ll.getgScore() + g;
 				ll.setgScore(g);
-				f = h + g;
+				f = w*h + g; 
 				ll.setfScore(f);
 			}
 			if(rr != null && map[rr.getCoords().getX()][rr.getCoords().getY()] != '0' && !closedList.contains(rr) && !noPaths.contains(rr)){
 				openList.add(rr);
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)rr.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)rr.getCoords().getY(),2));
+				h = h(rr.getCoords().getX(), rr.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(rr.getType()){
 					case '1':
 						g = 1;
@@ -183,12 +184,12 @@ public class ShortestPath {
 				g = g/2;
 				g = rr.getgScore() + g;
 				rr.setgScore(g);
-				f = h + g;
+				f = w*h + g; 
 				rr.setfScore(f);
 			}
-			if(dl != null && map[dl.getCoords().getX()][dl.getCoords().getX()] != '0' && !closedList.contains(dl) && !noPaths.contains(dl)){
+			if(dl != null && map[dl.getCoords().getX()][dl.getCoords().getX()] != '0' && map[dl.getCoords().getX()][dl.getCoords().getY()] != 'a' && map[dl.getCoords().getX()][dl.getCoords().getY()] != 'b' && !closedList.contains(dl) && !noPaths.contains(dl)){
 				openList.add(dl);
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)dl.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)dl.getCoords().getY(),2));
+				h = h(dl.getCoords().getX(), dl.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(dl.getType()){
 					case '1':
 						g = Math.sqrt(2);
@@ -212,12 +213,12 @@ public class ShortestPath {
 				g = g/2;
 				g = dl.getgScore() + g;
 				dl.setgScore(g);
-				f = h + g;
+				f = w*h + g; 
 				dl.setfScore(f);
 			}
 			if(dd != null && map[dd.getCoords().getX()][dd.getCoords().getY()] != '0' && !closedList.contains(dd) && !noPaths.contains(dd)){
 				openList.add(dd);
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)dd.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)dd.getCoords().getY(),2));
+				h = h(dd.getCoords().getX(), dd.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(dd.getType()){
 					case '1':
 						g = 1;
@@ -241,12 +242,12 @@ public class ShortestPath {
 				g = g/2;
 				g = dd.getgScore() + g;
 				dd.setgScore(g);
-				f = h + g;
+				f = w*h + g; 
 				dd.setfScore(f);
 			}
-			if(dr != null && map[dr.getCoords().getX()][dr.getCoords().getY()] != '0' && !closedList.contains(dr) && !noPaths.contains(dr)){
+			if(dr != null && map[dr.getCoords().getX()][dr.getCoords().getY()] != '0' && map[dr.getCoords().getX()][dr.getCoords().getY()] != 'a' && map[dr.getCoords().getX()][dr.getCoords().getY()] != 'b'&& !closedList.contains(dr) && !noPaths.contains(dr)){
 				openList.add(dr);
-				h = Math.sqrt(Math.pow((double)end.getCoords().getX() - (double)dr.getCoords().getX(),2) + Math.pow((double)end.getCoords().getY() - (double)dr.getCoords().getY(),2));
+				h = h(dr.getCoords().getX(), dr.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(dr.getType()){
 					case '1':
 						g = Math.sqrt(2);
@@ -270,7 +271,7 @@ public class ShortestPath {
 				g = g/2;
 				g = dr.getgScore() + g;
 				dr.setgScore(g);
-				f = h + g;
+				f = w*h + g; 
 				dr.setfScore(f);
 			}
 			//if at dead end then add vertex to noPaths list
@@ -412,6 +413,26 @@ public class ShortestPath {
 		dr.setParent(current);
 		return dr;
 		
-	}	
+	}
 
+	public static double h(int x, int y, int xEnd, int yEnd, int heur){
+		double hReturn = 0;
+		double xIn = (double)x;
+		double yIn = (double)y;
+		double xE = (double)xEnd;
+		double yE = (double)yEnd;
+		
+		switch (heur){
+			case 1:
+				hReturn = Math.sqrt(Math.pow(xE - xIn,2) + Math.pow(yE - yIn,2));
+			case 2: 
+				hReturn = Math.abs(xE - xIn) + Math.abs(yE - yIn);
+			case 3:
+				hReturn = 2*(Math.sqrt(Math.pow(xE - xIn,2) + Math.pow(yE - yIn,2)));
+			case 4:
+				hReturn = 0.25* (Math.sqrt(Math.pow(xE - xIn,2) + Math.pow(yE - yIn,2)));
+
+		 }
+		return hReturn;
+	}
 }

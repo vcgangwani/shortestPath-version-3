@@ -1,5 +1,5 @@
 import structures.Coordinate;
-import structures.Cell;
+import structures.Cell2;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.lang.Math;
 
 public class ShortestPath {
-	public static ArrayList<Cell> openList = new ArrayList<Cell>(); //List of unexpanded vertices
-	public static ArrayList<Cell> closedList = new ArrayList<Cell>(); //List of expanded vertices
-	public static ArrayList<Cell> noPaths = new ArrayList<Cell>(); //List of vertices that lead to deadends/edge
-	public static ArrayList<Cell> shortestPath = new ArrayList<Cell>(); //Final list of VertexNodes for shortest path
+	public static ArrayList<Cell2> openList = new ArrayList<Cell2>(); //List of unexpanded vertices
+	public static ArrayList<Cell2> closedList = new ArrayList<Cell2>(); //List of expanded vertices
+	public static ArrayList<Cell2> noPaths = new ArrayList<Cell2>(); //List of vertices that lead to dead ends/edge
+	public static ArrayList<Cell2> shortestPath = new ArrayList<Cell2>(); //Final list of VertexNodes for shortest path
 
-	public static int[][] ShortestPath(char[][] map, Cell start, Cell end, double weight, int heur){
+	public static int[][] ShortestPath(char[][] map, Cell2 start, Cell2 end, double weight, int heur){
 		
 		double g = 0, h = 0, f =0; //g = path cost, h = heuristic, f = g+h
-		Cell current; //Vertex being expanded
+		Cell2 current; //Vertex being expanded
 		closedList.add(start); //adding start vertex to expanded list
 		double w = weight;
 		//master loop checking and expanding vertices until the goal vertex is found
@@ -28,17 +28,22 @@ public class ShortestPath {
 				current = closedList.get(closedList.size());
 			
 			//finding all the vertices around the current vertex
-			Cell ul = getUL(current, map);
-			Cell uu = getUU(current, map);
-			Cell ur = getUR(current, map);
-			Cell ll = getLL(current, map);
-			Cell rr = getRR(current, map);
-			Cell dl = getDL(current, map);
-			Cell dd = getDD(current, map);
-			Cell dr = getDR(current, map);
+			Cell2 ul = getUL(current, map);
+			Cell2 uu = getUU(current, map);
+			Cell2 ur = getUR(current, map);
+			Cell2 ll = getLL(current, map);
+			Cell2 rr = getRR(current, map);
+			Cell2 dl = getDL(current, map);
+			Cell2 dd = getDD(current, map);
+			Cell2 dr = getDR(current, map);
+			for(int c = 0; c< closedList.size(); c++){
+				System.out.println(closedList.get(c));
+			}
+			if(closedList.contains(uu))
+				System.out.println(uu + "\nit does");
 			
 			//makes sure that these vertices are not an edge, not blocked, not already expanded, and does not lead to dead end
-			if(ul != null && map[ul.getCoords().getX()][ul.getCoords().getY()] != '0' && map[ul.getCoords().getX()][ul.getCoords().getY()] != 'a' && map[ul.getCoords().getX()][ul.getCoords().getY()] != 'b' && !closedList.contains(ul) && !noPaths.contains(ul)){
+			if(ul != null && map[ul.getCoords().getX()][ul.getCoords().getY()] != '0' && !closedList.contains(ul) && !noPaths.contains(ul)){
 				openList.add(ul);
 				//finding heuristic value, which is the Euclidean distance from vertex to end
 				h = h(ul.getCoords().getX(), ul.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);
@@ -100,7 +105,7 @@ public class ShortestPath {
 				f = w*h + g; 
 				uu.setfScore(f);
 			}
-			if(ur != null && map[ur.getCoords().getX()][ur.getCoords().getY()] != '0' && map[ur.getCoords().getX()][ur.getCoords().getY()] != 'a' && map[ur.getCoords().getX()][ur.getCoords().getY()] != 'b' && !closedList.contains(ur) && !noPaths.contains(ur)){
+			if(ur != null && map[ur.getCoords().getX()][ur.getCoords().getY()] != '0' && !closedList.contains(ur) && !noPaths.contains(ur)){
 				openList.add(ur);
 				h = h(ur.getCoords().getX(), ur.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(ur.getType()){
@@ -187,7 +192,7 @@ public class ShortestPath {
 				f = w*h + g; 
 				rr.setfScore(f);
 			}
-			if(dl != null && map[dl.getCoords().getX()][dl.getCoords().getX()] != '0' && map[dl.getCoords().getX()][dl.getCoords().getY()] != 'a' && map[dl.getCoords().getX()][dl.getCoords().getY()] != 'b' && !closedList.contains(dl) && !noPaths.contains(dl)){
+			if(dl != null && map[dl.getCoords().getX()][dl.getCoords().getX()] != '0' && !closedList.contains(dl) && !noPaths.contains(dl)){
 				openList.add(dl);
 				h = h(dl.getCoords().getX(), dl.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(dl.getType()){
@@ -245,7 +250,7 @@ public class ShortestPath {
 				f = w*h + g; 
 				dd.setfScore(f);
 			}
-			if(dr != null && map[dr.getCoords().getX()][dr.getCoords().getY()] != '0' && map[dr.getCoords().getX()][dr.getCoords().getY()] != 'a' && map[dr.getCoords().getX()][dr.getCoords().getY()] != 'b'&& !closedList.contains(dr) && !noPaths.contains(dr)){
+			if(dr != null && map[dr.getCoords().getX()][dr.getCoords().getY()] != '0' && !closedList.contains(dr) && !noPaths.contains(dr)){
 				openList.add(dr);
 				h = h(dr.getCoords().getX(), dr.getCoords().getY(), end.getCoords().getX(), end.getCoords().getY(), heur);				
 				switch(dr.getType()){
@@ -287,7 +292,7 @@ public class ShortestPath {
 			}
 			
 			//check for lowest f value in openList to move to closed list
-			Cell Low = openList.get(0);
+			Cell2 Low = openList.get(0);
 			double lowF = openList.get(0).getfScore();
 			int lowIndex = 0;
 			
@@ -304,8 +309,8 @@ public class ShortestPath {
 		}while(closedList.get(closedList.size()-1).getCoords().getX() != end.getCoords().getX() || closedList.get(closedList.size()-1).getCoords().getY() != end.getCoords().getY());
 		
 		//trace parents from end node to start node
-		Cell tracer = closedList.get(closedList.size()-1);
-		ArrayList<Cell> shortestPathInvert = new ArrayList<Cell>();
+		Cell2 tracer = closedList.get(closedList.size()-1);
+		ArrayList<Cell2> shortestPathInvert = new ArrayList<Cell2>();
 		
 		while(tracer.getCoords().getX() != start.getCoords().getX() || tracer.getCoords().getY() != start.getCoords().getY()){
 			shortestPathInvert.add(tracer);
@@ -314,7 +319,8 @@ public class ShortestPath {
 		
 		//change list to start to end instead of end to start
 		for(int j = shortestPathInvert.size(); j > 0; j--){
-			shortestPath.add(shortestPathInvert.get(j));
+			shortestPath.add(
+					shortestPathInvert.get(j-1));
 		}
 		
 		//create 2D array of x and y coord to return
@@ -328,15 +334,15 @@ public class ShortestPath {
 		
 	}
 	//creating vertices surrounding current vertex (ul = upper left, uu = up, ur = upper right, rr = right, dl = down left, etc.)
-	public static Cell getUL(Cell current, char map[][]){
+	public static Cell2 getUL(Cell2 current, char map[][]){
 		int xNew = current.getCoords().getX()-1;
-		int yNew = current.getCoords().getY() +1;
+		int yNew = current.getCoords().getY() -1;
 		
 		//make sure the vertex is not on the edge, if it is return null
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
 		
-		Cell ul = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 ul = new Cell2(xNew,yNew, map[xNew][yNew]);
 		
 		//the parent is set to the current vertex
 		ul.setParent(current);
@@ -344,72 +350,72 @@ public class ShortestPath {
 		
 	}
 	
-	public static Cell getUU(Cell current, char map[][]){
-		int xNew = current.getCoords().getX()-1;
-		int yNew =current.getCoords().getY() +1;
+	public static Cell2 getUU(Cell2 current, char map[][]){
+		int xNew = current.getCoords().getX();
+		int yNew =current.getCoords().getY()-1;
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
-		Cell uu = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 uu = new Cell2(xNew,yNew, map[xNew][yNew]);
 		uu.setParent(current);
 		return uu;
 		
 	}
-	public static Cell getUR(Cell current, char map[][]){
-		int xNew = current.getCoords().getX()-1;
-		int yNew = current.getCoords().getY() +1;
+	public static Cell2 getUR(Cell2 current, char map[][]){
+		int xNew = current.getCoords().getX()+1;
+		int yNew = current.getCoords().getY()-1;
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
-		Cell ur = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 ur = new Cell2(xNew,yNew, map[xNew][yNew]);
 		ur.setParent(current);
 		return ur;
 		
 	}
-	public static Cell getLL(Cell current, char map[][]){
+	public static Cell2 getLL(Cell2 current, char map[][]){
 		int xNew = current.getCoords().getX()-1;
-		int yNew = current.getCoords().getY() +1;
+		int yNew = current.getCoords().getY();
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
-		Cell ll = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 ll = new Cell2(xNew,yNew, map[xNew][yNew]);
 		ll.setParent(current);
 		return ll;
 		
 	}
-	public static Cell getRR(Cell current, char map[][]){
-		int xNew = current.getCoords().getX()-1;
-		int yNew = current.getCoords().getY() +1;
+	public static Cell2 getRR(Cell2 current, char map[][]){
+		int xNew = current.getCoords().getX()+1;
+		int yNew = current.getCoords().getY();
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
-		Cell rr = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 rr = new Cell2(xNew,yNew, map[xNew][yNew]);
 		rr.setParent(current);
 		return rr;
 		
 	}
-	public static Cell getDL(Cell current, char map[][]){
+	public static Cell2 getDL(Cell2 current, char map[][]){
 		int xNew = current.getCoords().getX()-1;
 		int yNew = current.getCoords().getX() +1;
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
-		Cell dl = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 dl = new Cell2(xNew,yNew, map[xNew][yNew]);
 		dl.setParent(current);
 		return dl;
 		
 	}
-	public static Cell getDD(Cell current, char map[][]){
-		int xNew = current.getCoords().getX()-1;
+	public static Cell2 getDD(Cell2 current, char map[][]){
+		int xNew = current.getCoords().getX();
 		int yNew = current.getCoords().getY() +1;
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
-		Cell dd = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 dd = new Cell2(xNew,yNew, map[xNew][yNew]);
 		dd.setParent(current);
 		return dd;
 		
 	}
-	public static Cell getDR(Cell current, char map[][]){
-		int xNew = current.getCoords().getX()-1;
+	public static Cell2 getDR(Cell2 current, char map[][]){
+		int xNew = current.getCoords().getX()+1;
 		int yNew = current.getCoords().getY() +1;
 		if(xNew<0 ||yNew<0 ||yNew>= map.length || xNew>=map[0].length)
 			return null;
-		Cell dr = new Cell(xNew,yNew, map[xNew][yNew]);
+		Cell2 dr = new Cell2(xNew,yNew, map[xNew][yNew]);
 		dr.setParent(current);
 		return dr;
 		
@@ -435,4 +441,5 @@ public class ShortestPath {
 		 }
 		return hReturn;
 	}
+	
 }

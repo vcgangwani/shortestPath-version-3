@@ -1,11 +1,13 @@
 package project1;
 
 public class Cell {
-	private double fScore;
-	private double gScore;
-	private double hScore;
+	private double fScore = 0;
+	private double gScore = 0;
+	private double hScore = 0;
 	private Coordinate coordinates;
 	private char type; //0,1,2,a,b
+	
+	private Cell Parent;
 	
 	public Cell(int x, int y, char type){
 		coordinates = new Coordinate(x,y);
@@ -57,6 +59,13 @@ public class Cell {
 	public char getType(){
 		return type;
 	}
+	
+	public Cell getParent(){
+		return Parent;
+	}
+	public void setParent(Cell parent){
+		this.Parent = parent;
+}
 	@Override
 	public String toString(){
 		return "Cell Coordinates: " + coordinates.getX() + ", " + coordinates.getY() + "\nType: " + type + "\nfScore: " + fScore + "\ngScore: " + gScore + "\nhScore: " + hScore;

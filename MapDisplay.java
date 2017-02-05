@@ -16,6 +16,9 @@ public class MapDisplay extends Applet{
 		this.map=map;
 		repaint();
 	}
+	public Map getMap(){
+		return map;
+	}
 	public Cell getCell(){
 		//return cell where your mouse is
 		int x = mousex / 8;

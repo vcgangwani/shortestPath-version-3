@@ -6,6 +6,7 @@ public class Cell2 {
 	private double hScore = 0;
 	private Coordinate coordinates;
 	private char type; //0,1,2,a,b
+	private boolean inClosedList = false;
 	
 	private Cell2 Parent;
 	
@@ -44,7 +45,13 @@ public class Cell2 {
 	}
 	public void setParent(Cell2 parent){
 		this.Parent = parent;
-}
+	}
+	public void setInClosedList(boolean check){
+		inClosedList = check;
+	}
+	public boolean isInClosedList(){
+		return inClosedList;
+	}
 	@Override
 	public String toString(){
 		return "Cell2 Coordinates: " + coordinates.getX() + ", " + coordinates.getY() + "\nType: " + type + "\nfScore: " + fScore + "\ngScore: " + gScore + "\nhScore: " + hScore;

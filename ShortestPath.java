@@ -35,11 +35,11 @@ public class ShortestPath {
 	public int[][] getShortestPath(){
 		int Path[][] = null;
 		addToOpenList(start);
-		
-		
 		Cell2 current = openList.get(0);
+		
+		
 		while(!isEnd(current)){
-			System.out.println(current.getParent().getCoords());
+			openToClosed();
 			expandCell();
 			current = closedList.get(closedList.size()-1);
 		}
@@ -50,9 +50,9 @@ public class ShortestPath {
 			shortestPath.add(current2);
 			current2 = current2.getParent();
 		}
-		
+		shortestPath.add(start);
 		Path = new int[shortestPath.size()][2];
-		for(int i = 0; i < shortestPath.size() - 1; i++){
+		for(int i = 0; i < shortestPath.size(); i++){
 			Path[i][0] = shortestPath.get(shortestPath.size()-1 - i).getCoords().getX();
 			Path[i][1] = shortestPath.get(shortestPath.size()-1 - i).getCoords().getY();
 		}
@@ -142,11 +142,11 @@ public class ShortestPath {
 	
 	
 	public static void expandCell(){
-		int x = openList.get(0).getCoords().getX();
-		int y = openList.get(0).getCoords().getY();
-		openList.get(0).setInClosedList(true);
-		openToClosed();
+		int x = closedList.get(closedList.size()-1).getCoords().getX();
+		int y = closedList.get(closedList.size()-1).getCoords().getY();
+		closedList.get(closedList.size()-1).setInClosedList(true);
 		
+		outerloop:
 		for(int i = x-1; i <= x+1; i++){
 			for(int j = y-1; j <= y+1; j++){
 				boolean isStraight;
@@ -159,6 +159,10 @@ public class ShortestPath {
 						CellMap[i][j].setParent(CellMap[x][y]);
 						calculateF(CellMap[i][j],isStraight);
 						addToOpenList(CellMap[i][j]);
+						if(isEnd(CellMap[i][j])){
+							closedList.add(CellMap[i][j]);
+							break outerloop;
+						}
 					}
 				}
 			}
@@ -209,14 +213,19 @@ public class ShortestPath {
 		switch(hType){
 			case 0:
 				h = hEucl(current);
+				break;
 			case 1:
 				h = hManhattan(current);
+				break;
 			case 2:
 				h = hEuclHard(current);
+				break;
 			case 3:
 				h = hEuclRiver(current);
+				break;
 			case 4:
 				h = hManhattanRiver(current);
+				break;
 		}
 		h = weight*h;
 		current.sethScore(h);
